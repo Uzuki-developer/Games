@@ -1062,19 +1062,12 @@ local ScreenGui = Instance.new("ScreenGui")
     Main = Library:Tab("Main")
     local Time = Main:Label("Executor Time");spawn(function() getgenv().Time = true;while true do wait(.1) UpdateTime() end end);function UpdateTime() local date = os.date("*t");local hour = (date.hour) % 24;local ampm = hour < 12 and "AM" or "PM";local timezone = string.format("%02i:%02i:%02i %s", ((hour -1) % 12) + 1, date.min, date.sec, ampm);local datetime = string.format("%02d/%02d/%04d", date.day, date.month, date.year);local LocalizationService = game:GetService("LocalizationService");local Players = game:GetService("Players");local player = Players.LocalPlayer;local name = player.Name;local result, code = pcall(function()   return LocalizationService:GetCountryRegionForPlayerAsync(player)  end);Time:Set(" : " .. timezone);Time:Set("Executor Time: " .. datetime .. " [ " .. code .. " ]");spawn(function() if getgenv().Time then pcall(function()  while wait() do  Time()  end end) end end) end
 --    Main:Seperator("Auto Farm")
+_G.STATSUPPOINT = 1
 
-Main:Toggle("Auto Farm (Task)",false,function(vu)
-        _G.AutoTask = vu
-        _G.naclip = vu
-    end)
-
-Main:Toggle("Auto Mob",false,function(vu)
-    
+Main:Toggle("Auto Farm",false,function(vu)
         Auto_Farm = vu
         if StageFarm == "" then
-            
         elseif MonsterFarm == "" then
-            
         else
         _G.AutoFarm = vu
         _G.naclip = vu
@@ -1086,24 +1079,97 @@ Main:Toggle("Auto Mob",false,function(vu)
         StageFarm = vu
     end)
     
+    Main:Seperator("Auto Farm boss")
+    
     MonsterFarm = ""
     Main:Dropdown("Select Monster",NameMon,function(vu)
         MonsterFarm = vu
     end)
     
-Main:Seperator("Settings")
+    BossFarm = ""
+    Main:Dropdown("Select Boss",NameBoss,function(vu)
+        BossFarm = vu
+    end)
     
+    
+    Main:Toggle("Auto Farm (Boss)",false,function(vu)
+        _G.AutoBoss = vu
+        _G.naclip = vu
+    end)
+    
+    StatsSection = Library:Tab("Auto Stats")
+    
+    StatsSection:Toggle("Quinque/Kagune",false, function(value)
+_G.UPMELEE = value
+while _G.UPMELEE do wait()
+local args = {
+    [1] = "Focus",
+    [2] = "WeaponAddButton",
+    [3] = 1
+}
+
+game:GetService("Players").LocalPlayer.PlayerFolder.StatsFunction:InvokeServer(unpack(args))
+end
+end)
+
+StatsSection:Toggle("Durability",false, function(value)
+_G.Dly = value
+while _G.Dly do wait()
+local args = {
+    [1] = "Focus",
+    [2] = "DurabilityAddButton",
+    [3] = _G.STATSOPPOINT
+}
+
+game:GetService("Players").LocalPlayer.PlayerFolder.StatsFunction:InvokeServer(unpack(args))
+end
+end)
+
+
+StatsSection:Toggle("Speed",false, function(value)
+_G.sp = value
+while _G.sp do wait()
+local args = {
+    [1] = "Focus",
+    [2] = "SpeedAddButton",
+    [3] = _G.STATSUPPOINT
+}
+
+game:GetService("Players").LocalPlayer.PlayerFolder.StatsFunction:InvokeServer(unpack(args))
+end
+end)
+
+StatsSection:Toggle("Physical",false, function(value)
+_G.UPGUN = value
+while _G.UPGUN do wait()
+local args = {
+    [1] = "Focus",
+    [2] = "PhysicalAddButton",
+    [3] = _G.STATSOPPOINT
+}
+
+game:GetService("Players").LocalPlayer.PlayerFolder.StatsFunction:InvokeServer(unpack(args))
+end
+end)
+
+Stt = Library:Tab("Settings")
+
+Stt:Seperator("Settings")
+
+ Stt:Line()
 Speed = 157
-Main:Slider("Tween Speed", 0,180,Speed,function(vu)
+Stt:Slider("Tween Speed", 0,180,Speed,function(vu)
         Speed = vu
     end)
+    
+    Stt:Line()
 
 DistanceFarm = 7
-    Main:Slider("Farm Distance", 0, 10, DistanceFarm, function(vu)
+    Stt:Slider("Farm Distance", 0, 10, DistanceFarm, function(vu)
         DistanceFarm = vu
     end)
 
-
+Stt:Line()
     
     
 spawn(function()
@@ -1252,43 +1318,6 @@ spawn(function()
     end)
     
     
-    spawn(function()
-        while wait() do
-            pcall(function()
-                if _G.AutoFarmType then
-                    for i,v in pairs(game:GetService("Workspace").NPCSpawns:GetDescendants()) do
-                        if string.find(v.Name,MonsterType) then
-                            if v:IsA"Model" then
-                                repeat RunService.Heartbeat:wait()
-                                    if not v:FindFirstChild(v.Name.." Corpse") then
-                                        if LocalPlayer.PlayerFolder.Customization.Team.Value == "Ghoul" and not LocalPlayer.Character:FindFirstChild("Kagune") then
-                                            UseSkill(StageFarm)
-                                        elseif LocalPlayer.PlayerFolder.Customization.Team.Value == "CCG" and not LocalPlayer.Character:FindFirstChild('Quinque') then
-                                            UseSkill(StageFarm)
-                                        end
-                                        totarget(v.HumanoidRootPart.CFrame * CFrame.new(0,0,DistanceFarm))
-                                        
-                                        local args = {
-                                            [1] = "\230\147\141\228\189\160\240\159\146\166\240\159\146\148\240\159\141\145\240\159\145\140\240\159\146\166\230\147\141\228\189\160\240\159\146\166\240\159\146\148\240\159\141\145\240\159\145\140\240\159\146\166\240\159\146\148\240\159\141\145\240\159\145\140\240\159\146\166\240\159\146\148\240\159\141\145\240\159\145\140\240\159\146\148\240\159\141\145\240\159\145\140\240\159\146\166\240\159\146\148\240\159\141\145\240\159\145\140",
-                                            [2] = "Mouse1",
-                                            [3] = "Down",
-                                            [4] = CFrame.new(Vector3.new(-1950.7624511719, 65.999755859375, 362.00042724609), Vector3.new(0.15576207637787, -0.52098202705383, 0.83923530578613)),
-                                            [6] = CFrame.new(Vector3.new(-1961.5758056641, 102.17329406738, 303.72848510742), Vector3.new(-0, -0.76606464385986, 0.6427635550499))
-                                        }
-                                        LocalPlayer.Character.Remotes.KeyEvent:FireServer(unpack(args))
-                                    elseif v:FindFirstChild(v.Name.." Corpse") then
-                                        totarget(v[v.Name.." Corpse"]["ClickPart"].CFrame * CFrame.new(0,-1,3))
-                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v[v.Name.." Corpse"]["ClickPart"].CFrame * CFrame.new(0,0,3)
-                                        fireclickdetector(v[v.Name.." Corpse"]["ClickPart"][""],50)
-                                    end
-                                until _G.AutoFarmType == false or string.find(v.Name,"Corpse")
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-    end)
     
     spawn(function()
         while wait() do
@@ -1318,64 +1347,6 @@ spawn(function()
                                         fireclickdetector(v[v.Name.." Corpse"]["ClickPart"][""],50)
                                     end
                                 until _G.AutoBoss == false or string.find(v.Name,"Corpse")
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-    end)
-    
-    
-    
-    spawn(function()
-        while wait() do
-            pcall(function()
-                if _G.AutoTask then
-                    if LocalPlayer.PlayerGui.HUD.TaskFrame.CompleteLabel.Text == 'You have no task at the moment.' then
-                        totarget(CFrame.new(-1513.0915527344, 77.739669799805, -675.24041748047))
-                        if (CFrame.new(-1513.0915527344, 77.739669799805, -675.24041748047).Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 4 then
-                            wait(.8)
-                            game:GetService("ReplicatedStorage").Remotes.Yoshimura.Task:InvokeServer()
-                        end 
-                    else
-                        local Message = LocalPlayer.PlayerGui.HUD.TaskFrame.CompleteLabel.Text
-                        local SplitMessage = string.split(Message, ":")
-                        local SplitMessageTask = string.split(SplitMessage[2], "/")
-                        if SplitMessage[1] == "Aogiri Member" and tonumber(SplitMessageTask[1]:sub(2)) < tonumber(SplitMessageTask[2]) then
-                            AutoFarmTaskMmonster = "Aogiri Member"
-                        end
-                        if tonumber(SplitMessageTask[1]:sub(2)) < tonumber(SplitMessageTask[2]) then
-                            for i,v in pairs(NPC:GetDescendants()) do
-                                if string.find(v.Name,AutoFarmTaskMmonster) then
-                                    repeat RunService.Heartbeat:wait()
-                                        if not v:FindFirstChild(v.Name.." Corpse") then
-                                            if LocalPlayer.PlayerFolder.Customization.Team.Value == "Ghoul" and not LocalPlayer.Character:FindFirstChild("Kagune") then
-                                                UseSkill(StageFarm)
-                                            elseif LocalPlayer.PlayerFolder.Customization.Team.Value == "CCG" and not LocalPlayer.Character:FindFirstChild('Quinque') then
-                                                UseSkill(StageFarm)
-                                            end
-                                            totarget(v.HumanoidRootPart.CFrame * CFrame.new(0,0,4))
-                                            local args = {
-                                                [1] = "\230\147\141\228\189\160\240\159\146\166\240\159\146\148\240\159\141\145\240\159\145\140\240\159\146\166\230\147\141\228\189\160\240\159\146\166\240\159\146\148\240\159\141\145\240\159\145\140\240\159\146\166\240\159\146\148\240\159\141\145\240\159\145\140\240\159\146\166\240\159\146\148\240\159\141\145\240\159\145\140\240\159\146\148\240\159\141\145\240\159\145\140\240\159\146\166\240\159\146\148\240\159\141\145\240\159\145\140",
-                                                [2] = "Mouse1",
-                                                [3] = "Down",
-                                                [4] = CFrame.new(Vector3.new(-1950.7624511719, 65.999755859375, 362.00042724609), Vector3.new(0.15576207637787, -0.52098202705383, 0.83923530578613)),
-                                                [6] = CFrame.new(Vector3.new(-1961.5758056641, 102.17329406738, 303.72848510742), Vector3.new(-0, -0.76606464385986, 0.6427635550499))
-                                            }
-                                            LocalPlayer.Character.Remotes.KeyEvent:FireServer(unpack(args))
-                                        elseif v:FindFirstChild(v.Name.." Corpse") then
-                                            totarget(v[v.Name.." Corpse"]["ClickPart"].CFrame * CFrame.new(0,0,1))
-                                            fireclickdetector(v[v.Name.." Corpse"]["ClickPart"][""],50)
-                                        end
-                                    until _G.AutoTask == false or tonumber(SplitMessageTask[1]:sub(2)) == tonumber(SplitMessageTask[2])
-                                end
-                            end
-                        else
-                            totarget(CFrame.new(-1513.0915527344, 77.739669799805, -675.24041748047))
-                            if (CFrame.new(-1513.0915527344, 77.739669799805, -675.24041748047).Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 4 then
-                                wait(.8)
-                                remote.Yoshimura.Task:InvokeServer()
                             end
                         end
                     end
